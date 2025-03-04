@@ -44,10 +44,23 @@ function main() {
         console.log(`Task deleted successfully (ID: ${id})`);
     });
     program
+        .command('clear')
+        .description('Delete all tasks')
+        .action(() => {
+        const result = task_1.db.deleteAll();
+        console.log(`Tasks cleared successfully`);
+    });
+    program
         .command('list [status]')
-        .description('List all tasks')
+        .description('List all tasks. Optional \'status\' fileter: \'done\', \'in-progress\', or \'todo\'')
         .action((status) => {
-        const tasks = task_1.db.getAll(status);
+        let tasks = task_1.db.getAll(status);
+        if (task_1.taskStatuses.includes(status)) {
+            tasks = tasks.filter((task) => task.status === status);
+        }
+        else {
+            console.log(`Task status not found: ${status}`);
+        }
         console.table(tasks, ['id', 'description', 'status', 'createdAt', 'updatedAt']);
     });
     program

@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = void 0;
+exports.db = exports.taskStatuses = void 0;
 const path_1 = __importDefault(require("path"));
 const database_1 = require("./database");
+exports.taskStatuses = ['todo', 'done', 'in-progress'];
 const now = () => new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
 class TaskDatabase extends database_1.BaseDatabase {
     insert(entry) {

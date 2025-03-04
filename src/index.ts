@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Task, taskStatus, db as taskDb } from './task'
+import { Task, taskStatus, db as taskDb, taskStatuses } from './task'
 
 const { Command } = require('commander')
 const figlet = require('figlet')
@@ -49,12 +49,25 @@ function main() {
 			console.log(`Task deleted successfully (ID: ${id})`)
 		})
 
+		program
+		.command('clear')
+		.description('Delete all tasks')
+		.action(() => {
+            const result = taskDb.deleteAll()
+			console.log(`Tasks cleared successfully`)
+		})
+
 	program
 		.command('list [status]')
-		.description('List all tasks')
-		.action((status: taskStatus | undefined) => {
-            const tasks = taskDb.getAll(status)
-            console.table(tasks, ['id', 'description', 'status', 'createdAt', 'updatedAt']);
+		.description('List all tasks. Optional \'status\' fileter: \'done\', \'in-progress\', or \'todo\'')
+		.action((status?: taskStatus | undefined) => {
+			let tasks = taskDb.getAll(status)
+			if (taskStatuses.includes(status as taskStatus)) {
+				tasks = tasks.filter((task) => task.status === status)
+			} else {
+				console.log(`Task status not found: ${status}`)
+			}
+			console.table(tasks, ['id', 'description', 'status', 'createdAt', 'updatedAt'])
 		})
 
 	program
